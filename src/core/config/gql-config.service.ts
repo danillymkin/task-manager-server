@@ -22,6 +22,9 @@ export class GqlConfigService implements GqlOptionsFactory {
       resolvers: {
         DateTime: GraphQLDateTime,
       },
+      context: ({ req, res }) => {
+        return { req, res };
+      },
       subscriptions: {
         'graphql-ws': true,
       },
