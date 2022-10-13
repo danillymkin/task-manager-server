@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { TokenPayload } from './types/token-payload.type';
@@ -37,24 +33,6 @@ export class TokenService {
     });
   }
 
-  public async findByToken(token: string): Promise<RefreshToken> {
-    try {
-      return await this.prisma.refreshToken.findUnique({
-        where: { token },
-      });
-    } catch (e) {
-      throw new NotFoundException('RefreshToken не найден');
-    }
-  }
-
-  public async deleteByToken(token: string): Promise<void> {
-    try {
-      await this.prisma.refreshToken.delete({
-        where: { token },
-      });
-    } catch (e) {}
-  }
-
   public async saveRefreshToken(
     userId: number,
     token: string,
@@ -73,6 +51,14 @@ export class TokenService {
     return this.prisma.refreshToken.create({
       data: { userId, token },
     });
+  }
+
+  public async deleteByToken(token: string): Promise<void> {
+    try {
+      await this.prisma.refreshToken.delete({
+        where: { token },
+      });
+    } catch (e) {}
   }
 
   public async getRefreshTokenPayload(token: string): Promise<TokenPayload> {
