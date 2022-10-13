@@ -1,14 +1,13 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { User } from './entities/user.entity';
 import { RegisterInput } from '../auth/dto/register.input';
 import { LoginInput } from '../auth/dto/login.input';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
@@ -30,7 +29,7 @@ export class UserService {
 
   public async findOneByEmail(email: string): Promise<User> {
     try {
-      return this.prisma.user.findUnique({
+      return this.prisma.user.findUniqueOrThrow({
         where: { email },
       });
     } catch (e) {
@@ -40,7 +39,7 @@ export class UserService {
 
   public async findOneByNickName(nickName: string): Promise<User> {
     try {
-      return this.prisma.user.findUnique({
+      return this.prisma.user.findUniqueOrThrow({
         where: { nickName },
       });
     } catch (e) {
@@ -51,26 +50,20 @@ export class UserService {
   }
 
   public async create(registerInput: RegisterInput): Promise<User> {
-    try {
-      const hashedPassword = await this.hashPassword(registerInput.password);
+    const hashedPassword = await this.hashPassword(registerInput.password);
 
-      return this.prisma.user.create({
-        data: {
-          email: registerInput.email,
-          nickName: registerInput.nickName,
-          password: hashedPassword,
-        },
-      });
-    } catch (e) {
-      throw new InternalServerErrorException(
-        'Не удалось зарегистрировать пользователя',
-      );
-    }
+    return this.prisma.user.create({
+      data: {
+        email: registerInput.email,
+        nickName: registerInput.nickName,
+        password: hashedPassword,
+      },
+    });
   }
 
   public async validate({ email, password }: LoginInput): Promise<User> {
     try {
-      const user = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findUniqueOrThrow({
         where: { email },
       });
 
