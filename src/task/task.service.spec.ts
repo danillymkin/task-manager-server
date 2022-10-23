@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TaskService } from './task.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Task } from '@prisma/client';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 
@@ -12,10 +12,12 @@ const mockTask: Task = {
   description: 'New task',
   priority: 3,
   deadline: new Date(),
+  isCompleted: false,
   completedAt: new Date(),
   isDeleted: false,
   createdAt: new Date(),
   updatedAt: new Date(),
+  deletedAt: null,
 };
 
 const mockCreateTaskInput: CreateTaskInput = {

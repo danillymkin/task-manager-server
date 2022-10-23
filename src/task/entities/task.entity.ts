@@ -25,8 +25,11 @@ export class Task {
   isDeleted!: boolean;
 
   @Field(() => GraphQLDateTime, { nullable: false })
-  createdAt: string | Date;
+  createdAt!: string | Date;
 
   @Field(() => GraphQLDateTime, { nullable: false })
-  updatedAt: string | Date;
+  updatedAt!: string | Date;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  deletedAt?: string | Date;
 }
