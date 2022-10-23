@@ -36,15 +36,21 @@ export class TaskService {
   }
 
   public async update(updateTaskInput: UpdateTaskInput): Promise<Task> {
-    return this.prisma.task.update({
-      where: { id: updateTaskInput.id },
-      data: {
-        name: updateTaskInput.name,
-        description: updateTaskInput.description,
-        priority: updateTaskInput.priority,
-        deadline: updateTaskInput.deadline,
-      },
-    });
+    try {
+      return this.prisma.task.update({
+        where: { id: updateTaskInput.id },
+        data: {
+          name: updateTaskInput.name,
+          description: updateTaskInput.description,
+          priority: updateTaskInput.priority,
+          deadline: updateTaskInput.deadline,
+        },
+      });
+    } catch (e) {
+      throw new NotFoundException(
+        `Задача с id: ${updateTaskInput.id} не найдена`,
+      );
+    }
   }
 
   public async remove(id: number): Promise<Task> {
