@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDateTime } from 'graphql-scalars';
 
 @ObjectType()
@@ -12,7 +12,7 @@ export class Task {
   @Field({ nullable: true })
   description?: string;
 
-  @Field({ nullable: false })
+  @Field(() => Int, { nullable: false })
   priority!: number;
 
   @Field(() => GraphQLDateTime, { nullable: true })
