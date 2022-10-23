@@ -13,7 +13,7 @@ export class TaskResolver {
     return this.taskService.create(createTaskInput);
   }
 
-  @Query(() => [Task], { name: 'task' })
+  @Query(() => [Task], { name: 'tasks' })
   findAll() {
     return this.taskService.findAll();
   }
