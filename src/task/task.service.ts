@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { PrismaService } from '../prisma/prisma.service';
@@ -62,7 +58,7 @@ export class TaskService {
         },
       });
     } catch (e) {
-      throw new BadRequestException(`Задача с id: ${id} не найдена`);
+      throw new NotFoundException(`Задача с id: ${id} не найдена`);
     }
   }
 }
