@@ -9,27 +9,31 @@ export class TaskResolver {
   constructor(private readonly taskService: TaskService) {}
 
   @Mutation(() => Task)
-  createTask(@Args('createTaskInput') createTaskInput: CreateTaskInput) {
+  createTask(
+    @Args('createTaskInput') createTaskInput: CreateTaskInput,
+  ): Promise<Task> {
     return this.taskService.create(createTaskInput);
   }
 
   @Query(() => [Task], { name: 'tasks' })
-  findAll() {
+  findAll(): Promise<Task[]> {
     return this.taskService.findAll();
   }
 
   @Query(() => Task, { name: 'task' })
-  findOneById(@Args('id', { type: () => Int }) id: number) {
+  findOneById(@Args('id', { type: () => Int }) id: number): Promise<Task> {
     return this.taskService.findOneById(id);
   }
 
   @Mutation(() => Task)
-  updateTask(@Args('updateTaskInput') updateTaskInput: UpdateTaskInput) {
+  updateTask(
+    @Args('updateTaskInput') updateTaskInput: UpdateTaskInput,
+  ): Promise<Task> {
     return this.taskService.update(updateTaskInput);
   }
 
   @Mutation(() => Task)
-  removeTask(@Args('id', { type: () => Int }) id: number) {
+  removeTask(@Args('id', { type: () => Int }) id: number): Promise<Task> {
     return this.taskService.remove(id);
   }
 }
