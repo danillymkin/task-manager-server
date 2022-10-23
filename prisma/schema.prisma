@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["extendedWhereUnique"]
 }
 
@@ -28,4 +28,16 @@ model RefreshToken {
   token  String @unique @db.VarChar(512)
   userId Int
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  description String?
+  priority    Int       @default(4)
+  deadline    DateTime?
+  completedAt DateTime?
+  isDeleted   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
