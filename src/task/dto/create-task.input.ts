@@ -22,5 +22,6 @@ export class CreateTaskInput {
     {},
     { message: 'Срок выполнения должен быть строкой в формате ISO 8601' },
   )
+  @Field({ nullable: true })
   deadline?: string;
 }
