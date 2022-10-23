@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { PrismaService } from '../prisma/prisma.service';
@@ -43,7 +47,16 @@ export class TaskService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  public async remove(id: number): Promise<Task> {
+    try {
+      return this.prisma.task.update({
+        where: { id },
+        data: {
+          isDeleted: true,
+        },
+      });
+    } catch (e) {
+      throw new BadRequestException(`Задача с id: ${id} не найдена`);
+    }
   }
 }
