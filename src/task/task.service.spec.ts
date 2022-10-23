@@ -16,7 +16,7 @@ const mockTask: Task = {
 
 const prisma = {
   task: {
-    findMany: jest.fn(),
+    findMany: jest.fn().mockResolvedValue([mockTask]),
   },
 };
 
@@ -41,5 +41,13 @@ describe('TaskService', () => {
 
   it('should be defined', () => {
     expect(taskService).toBeDefined();
+  });
+
+  describe('findAll', () => {
+    it('should return a list of tasks', async () => {
+      const tasks = await taskService.findAll();
+
+      expect(tasks).toContain(mockTask);
+    });
   });
 });
