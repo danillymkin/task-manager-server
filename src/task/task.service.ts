@@ -8,6 +8,26 @@ import { Task } from './entities/task.entity';
 export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
+  public async toggleCompleted(id: number) {
+    try {
+      const task = await this.prisma.task.findUniqueOrThrow({
+        where: { id },
+      });
+
+      const completedAt = !task.isCompleted ? new Date() : undefined;
+
+      return await this.prisma.task.update({
+        where: { id },
+        data: {
+          isCompleted: !task.isCompleted,
+          completedAt,
+        },
+      });
+    } catch (e) {
+      throw new NotFoundException('Задача с id: ${id} не найдена');
+    }
+  }
+
   public async create(createTaskInput: CreateTaskInput): Promise<Task> {
     return this.prisma.task.create({
       data: {
