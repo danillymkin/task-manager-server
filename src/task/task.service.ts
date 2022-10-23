@@ -8,8 +8,15 @@ import { Task } from './entities/task.entity';
 export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(createTaskInput: CreateTaskInput) {
-    return 'This action adds a new task';
+  public async create(createTaskInput: CreateTaskInput) {
+    return this.prisma.task.create({
+      data: {
+        name: createTaskInput.name,
+        description: createTaskInput.description,
+        priority: createTaskInput.priority,
+        deadline: createTaskInput.deadline,
+      },
+    });
   }
 
   public async findAll(): Promise<Task[]> {
