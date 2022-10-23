@@ -8,7 +8,7 @@ import { Task } from './entities/task.entity';
 export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
-  public async create(createTaskInput: CreateTaskInput) {
+  public async create(createTaskInput: CreateTaskInput): Promise<Task> {
     return this.prisma.task.create({
       data: {
         name: createTaskInput.name,
