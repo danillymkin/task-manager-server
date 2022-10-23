@@ -29,7 +29,7 @@ export class TaskService {
 
   public async findOneById(id: number): Promise<Task> {
     try {
-      return this.prisma.task.findUniqueOrThrow({ where: { id } });
+      return await this.prisma.task.findUniqueOrThrow({ where: { id } });
     } catch (e) {
       throw new NotFoundException(`Задача с id: ${id} не найдена`);
     }
@@ -37,7 +37,7 @@ export class TaskService {
 
   public async update(updateTaskInput: UpdateTaskInput): Promise<Task> {
     try {
-      return this.prisma.task.update({
+      return await this.prisma.task.update({
         where: { id: updateTaskInput.id },
         data: {
           name: updateTaskInput.name,
@@ -55,7 +55,7 @@ export class TaskService {
 
   public async remove(id: number): Promise<Task> {
     try {
-      return this.prisma.task.update({
+      return await this.prisma.task.update({
         where: { id },
         data: {
           isDeleted: true,
