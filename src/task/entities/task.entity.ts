@@ -18,6 +18,9 @@ export class Task {
   @Field(() => GraphQLDateTime, { nullable: true })
   deadline?: string | Date;
 
+  @Field({ nullable: false })
+  isCompleted!: boolean;
+
   @Field(() => GraphQLDateTime, { nullable: true })
   completedAt?: string | Date;
 
