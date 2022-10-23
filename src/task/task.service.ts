@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { PrismaService } from '../prisma/prisma.service';
@@ -16,8 +16,12 @@ export class TaskService {
     return this.prisma.task.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  public async findOneById(id: number): Promise<Task> {
+    try {
+      return this.prisma.task.findUniqueOrThrow({ where: { id } });
+    } catch (e) {
+      throw new NotFoundException(`Задача с id: ${id} не найдена`);
+    }
   }
 
   update(id: number, updateTaskInput: UpdateTaskInput) {
