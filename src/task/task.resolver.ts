@@ -20,7 +20,7 @@ export class TaskResolver {
 
   @Query(() => Task, { name: 'task' })
   findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.taskService.findOne(id);
+    return this.taskService.findOneById(id);
   }
 
   @Mutation(() => Task)
