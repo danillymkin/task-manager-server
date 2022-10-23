@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { PrismaService } from '../prisma/prisma.service';
+import { Task } from './entities/task.entity';
 
 @Injectable()
 export class TaskService {
@@ -11,8 +12,8 @@ export class TaskService {
     return 'This action adds a new task';
   }
 
-  findAll() {
-    return `This action returns all task`;
+  public async findAll(): Promise<Task[]> {
+    return this.prisma.task.findMany();
   }
 
   findOne(id: number) {
