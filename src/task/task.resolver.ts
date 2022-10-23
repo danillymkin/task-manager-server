@@ -8,6 +8,13 @@ import { UpdateTaskInput } from './dto/update-task.input';
 export class TaskResolver {
   constructor(private readonly taskService: TaskService) {}
 
+  @Mutation(() => Task, { name: 'toggleTaskCompleted' })
+  toggleTaskCompleted(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<Task> {
+    return this.taskService.toggleCompleted(id);
+  }
+
   @Mutation(() => Task, { name: 'createTask' })
   createTask(
     @Args('createTaskInput') createTaskInput: CreateTaskInput,
