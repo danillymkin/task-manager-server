@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TaskService } from './task.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Task } from '@prisma/client';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 
@@ -118,6 +118,28 @@ describe('TaskService', () => {
       const task = await taskService.update(mockUpdateTaskInput);
 
       expect(task).toEqual(mockUpdatedTask);
+    });
+  });
+
+  describe('remove', () => {
+    it('should update field isDeleted of task', async () => {
+      jest
+        .spyOn(prismaService.task, 'update')
+        .mockResolvedValueOnce({ ...mockTask, isDeleted: true });
+
+      const deletedTask = await taskService.remove(mockTask.id);
+
+      expect(deletedTask).toEqual({ ...mockTask, isDeleted: true });
+    });
+
+    it('should throw BadRequestException', async () => {
+      jest
+        .spyOn(prismaService.task, 'update')
+        .mockRejectedValueOnce(new BadRequestException());
+
+      await expect(taskService.remove(mockTask.id)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 });
