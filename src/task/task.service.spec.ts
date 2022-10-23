@@ -3,6 +3,7 @@ import { TaskService } from './task.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Task } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
+import { CreateTaskInput } from './dto/create-task.input';
 
 const mockTask: Task = {
   id: 1,
@@ -16,10 +17,18 @@ const mockTask: Task = {
   updatedAt: new Date(),
 };
 
+const mockCreateTaskInput: CreateTaskInput = {
+  name: mockTask.name,
+  deadline: mockTask.deadline.toISOString(),
+  description: mockTask.description,
+  priority: mockTask.priority,
+};
+
 const prisma = {
   task: {
     findMany: jest.fn().mockResolvedValue([mockTask]),
     findUniqueOrThrow: jest.fn(),
+    create: jest.fn(),
   },
 };
 
@@ -73,6 +82,16 @@ describe('TaskService', () => {
       await expect(taskService.findOneById(mockTask.id)).rejects.toThrow(
         NotFoundException,
       );
+    });
+  });
+
+  describe('create', () => {
+    it('should create new task', async () => {
+      jest.spyOn(prismaService.task, 'create').mockResolvedValueOnce(mockTask);
+
+      const task = await taskService.create(mockCreateTaskInput);
+
+      expect(task).toEqual(mockTask);
     });
   });
 });
