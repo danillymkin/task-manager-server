@@ -73,6 +73,54 @@ describe('TaskService', () => {
     expect(taskService).toBeDefined();
   });
 
+  describe('toggleCompleted', () => {
+    it('should set isCompleted true and set completedAt', async () => {
+      jest
+        .spyOn(prismaService.task, 'findUniqueOrThrow')
+        .mockResolvedValueOnce(mockTask);
+
+      await taskService.toggleCompleted(mockTask.id);
+
+      expect(prismaService.task.update).toHaveBeenCalledWith({
+        where: { id: mockTask.id },
+        data: {
+          isCompleted: !mockTask.isCompleted,
+          completedAt: expect.anything(),
+        },
+      });
+    });
+
+    it('should set isCompleted false', async () => {
+      jest
+        .spyOn(prismaService.task, 'findUniqueOrThrow')
+        .mockResolvedValueOnce({ ...mockTask, isCompleted: true });
+      jest.spyOn(prismaService.task, 'update').mockResolvedValueOnce({
+        ...mockTask,
+        isCompleted: false,
+      });
+
+      const task = await taskService.toggleCompleted(mockTask.id);
+
+      expect(prismaService.task.update).toHaveBeenCalledWith({
+        where: { id: mockTask.id },
+        data: {
+          isCompleted: task.isCompleted,
+          completedAt: undefined,
+        },
+      });
+    });
+
+    it('should throw NotFoundException', async () => {
+      jest
+        .spyOn(prismaService.task, 'findUniqueOrThrow')
+        .mockRejectedValueOnce(null);
+
+      await expect(taskService.toggleCompleted(mockTask.id)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
   describe('findAll', () => {
     it('should return a list of tasks', async () => {
       const tasks = await taskService.findAll();
