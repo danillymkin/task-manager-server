@@ -143,12 +143,10 @@ describe('TaskService', () => {
     });
 
     it('should throw BadRequestException', async () => {
-      jest
-        .spyOn(prismaService.task, 'update')
-        .mockRejectedValueOnce(new BadRequestException());
+      jest.spyOn(prismaService.task, 'update').mockRejectedValueOnce(null);
 
       await expect(taskService.remove(mockTask.id)).rejects.toThrow(
-        BadRequestException,
+        NotFoundException,
       );
     });
   });
