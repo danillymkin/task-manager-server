@@ -31,8 +31,16 @@ export class TaskService {
     }
   }
 
-  update(id: number, updateTaskInput: UpdateTaskInput) {
-    return `This action updates a #${id} task`;
+  public async update(updateTaskInput: UpdateTaskInput) {
+    return this.prisma.task.update({
+      where: { id: updateTaskInput.id },
+      data: {
+        name: updateTaskInput.name,
+        description: updateTaskInput.description,
+        priority: updateTaskInput.priority,
+        deadline: updateTaskInput.deadline,
+      },
+    });
   }
 
   remove(id: number) {
