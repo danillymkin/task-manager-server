@@ -1,18 +1,33 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TaskService } from './task.service';
+import { PrismaService } from '../prisma/prisma.service';
+
+const prisma = {
+  task: {
+    findMany: jest.fn(),
+  },
+};
 
 describe('TaskService', () => {
-  let service: TaskService;
+  let taskService: TaskService;
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TaskService],
+      providers: [
+        TaskService,
+        {
+          provide: PrismaService,
+          useValue: prisma,
+        },
+      ],
     }).compile();
 
-    service = module.get<TaskService>(TaskService);
+    taskService = module.get<TaskService>(TaskService);
+    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(taskService).toBeDefined();
   });
 });
