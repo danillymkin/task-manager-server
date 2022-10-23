@@ -113,11 +113,21 @@ describe('TaskService', () => {
 
   describe('update', () => {
     it('should update the task', async () => {
-      jest.spyOn(prismaService.task, 'update').mockResolvedValueOnce(mockUpdatedTask);
+      jest
+        .spyOn(prismaService.task, 'update')
+        .mockResolvedValueOnce(mockUpdatedTask);
 
       const task = await taskService.update(mockUpdateTaskInput);
 
       expect(task).toEqual(mockUpdatedTask);
+    });
+
+    it('should throw NotFoundException', async () => {
+      jest.spyOn(prismaService.task, 'update').mockRejectedValueOnce(null);
+
+      await expect(taskService.update(mockUpdateTaskInput)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
