@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Task } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
 import { CreateTaskInput } from './dto/create-task.input';
+import { UpdateTaskInput } from './dto/update-task.input';
 
 const mockTask: Task = {
   id: 1,
@@ -24,11 +25,26 @@ const mockCreateTaskInput: CreateTaskInput = {
   priority: mockTask.priority,
 };
 
+const mockUpdateTaskInput: UpdateTaskInput = {
+  id: mockTask.id,
+  name: 'Task',
+  description: 'Task',
+  deadline: mockTask.deadline.toISOString(),
+  priority: 2,
+};
+
+const mockUpdatedTask = {
+  ...mockTask,
+  ...mockUpdateTaskInput,
+  deadline: new Date(mockUpdateTaskInput.deadline),
+};
+
 const prisma = {
   task: {
     findMany: jest.fn().mockResolvedValue([mockTask]),
     findUniqueOrThrow: jest.fn(),
     create: jest.fn(),
+    update: jest.fn(),
   },
 };
 
@@ -92,6 +108,16 @@ describe('TaskService', () => {
       const task = await taskService.create(mockCreateTaskInput);
 
       expect(task).toEqual(mockTask);
+    });
+  });
+
+  describe('update', () => {
+    it('should update the task', async () => {
+      jest.spyOn(prismaService.task, 'update').mockResolvedValueOnce(mockUpdatedTask);
+
+      const task = await taskService.update(mockUpdateTaskInput);
+
+      expect(task).toEqual(mockUpdatedTask);
     });
   });
 });
