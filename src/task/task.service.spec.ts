@@ -1,6 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TaskService } from './task.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { Task } from './entities/task.entity';
+
+const mockTask: Task = {
+  id: 1,
+  name: 'New task',
+  description: 'New task',
+  priority: 3,
+  deadline: new Date(),
+  isDeleted: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
 
 const prisma = {
   task: {
