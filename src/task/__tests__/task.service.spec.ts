@@ -2,6 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Task } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import { UpdateTaskInput } from '../dto/update-task.input';
 import { TaskService } from '../task.service';
 
 const mockTask: Task = {
@@ -13,9 +14,17 @@ const mockTask: Task = {
   isCompleted: false,
   completedAt: null,
   isDeleted: false,
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date('2022-10-28T15:55:00Z'),
+  updatedAt: new Date('2022-10-28T15:55:00Z'),
   deletedAt: null,
+};
+
+const mockUpdateInputTask: UpdateTaskInput = {
+  id: mockTask.id,
+  name: 'task',
+  description: 'task',
+  deadline: '2022-10-28T15:55:00Z',
+  priority: 1,
 };
 
 const prisma = {
@@ -23,7 +32,9 @@ const prisma = {
     findMany: jest.fn().mockReturnValue([mockTask]),
     create: jest.fn(),
     findUniqueOrThrow: jest.fn(),
-    update: jest.fn(),
+    update: jest
+      .fn()
+      .mockResolvedValue({ ...mockTask, ...mockUpdateInputTask }),
   },
 };
 
@@ -76,6 +87,22 @@ describe('TaskService', () => {
         .mockRejectedValue(null);
 
       await expect(taskService.findOneById(mockTask.id)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
+  describe('update', () => {
+    it('should update a task', async () => {
+      const task = await taskService.update(mockUpdateInputTask);
+
+      expect(task).toEqual({ ...mockTask, ...mockUpdateInputTask });
+    });
+
+    it('should throw NotFoundException', async () => {
+      jest.spyOn(prismaService.task, 'update').mockRejectedValue(null);
+
+      await expect(taskService.update(mockUpdateInputTask)).rejects.toThrow(
         NotFoundException,
       );
     });
