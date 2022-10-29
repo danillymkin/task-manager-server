@@ -1,6 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Task } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { TaskService } from '../task.service';
+
+const mockTask: Task = {
+  id: 1,
+  name: 'task name',
+  description: 'description',
+  priority: 2,
+  isCompleted: false,
+  completedAt: null,
+  isDeleted: false,
+  createdAt: '',
+};
 
 const prisma = {
   task: {
