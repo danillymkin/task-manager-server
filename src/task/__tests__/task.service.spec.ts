@@ -107,4 +107,30 @@ describe('TaskService', () => {
       );
     });
   });
+
+  describe('remove', () => {
+    it('should set deleted flag', async () => {
+      jest.spyOn(prismaService.task, 'update').mockResolvedValue({
+        ...mockTask,
+        isDeleted: true,
+        deletedAt: new Date('2022-10-28T15:55:00Z'),
+      });
+
+      const task = await taskService.remove(mockTask.id);
+
+      expect(task).toEqual({
+        ...mockTask,
+        isDeleted: true,
+        deletedAt: new Date('2022-10-28T15:55:00Z'),
+      });
+    });
+
+    it('should throw NotFoundException', async () => {
+      jest.spyOn(prismaService.task, 'update').mockRejectedValue(null);
+
+      await expect(taskService.remove(mockTask.id)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
 });
