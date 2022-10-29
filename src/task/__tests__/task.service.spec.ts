@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Task } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -55,6 +56,28 @@ describe('TaskService', () => {
       const tasks = await taskService.findAll();
 
       expect(tasks).toEqual([mockTask]);
+    });
+  });
+
+  describe('findOneById', () => {
+    it('should return a task', async () => {
+      jest
+        .spyOn(prismaService.task, 'findUniqueOrThrow')
+        .mockResolvedValue(mockTask);
+
+      const task = await taskService.findOneById(mockTask.id);
+
+      expect(task).toBe(mockTask);
+    });
+
+    it('should throw NotFoundException', async () => {
+      jest
+        .spyOn(prismaService.task, 'findUniqueOrThrow')
+        .mockRejectedValue(null);
+
+      await expect(taskService.findOneById(mockTask.id)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });
