@@ -7,6 +7,13 @@ import { TokenModule } from './token/token.module';
 import { TaskModule } from './task/task.module';
 
 @Module({
-  imports: [CoreModule, PrismaModule, AuthModule, UserModule, TokenModule, TaskModule],
+  imports: [
+    CoreModule,
+    PrismaModule,
+    AuthModule,
+    UserModule,
+    TokenModule,
+    TaskModule,
+  ],
 })
 export class AppModule {}
