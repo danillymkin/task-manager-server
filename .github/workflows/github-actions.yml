@@ -1,0 +1,30 @@
+name: Actions
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master, develop]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Starting Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: install dependencies
+        run: yarn install
+      - name: check format
+        run: yarn format:check
+      - name: check lint
+        run: yarn lint
+      - name: run tests
+        run: yarn test
+      - name: run prebuild
+        run: yarn prebuild
+      - name: run build
+        run: yarn build
